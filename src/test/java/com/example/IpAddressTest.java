@@ -16,10 +16,29 @@ public class IpAddressTest {
     @Test
     public void testIpAddressCreation(){
         IpAddress i = new IpAddress( "10.0.0.1");
-        assertEquals( i.getFirstFourBits(), 10);
-        assertEquals( i.getSecondFourBits(), 0);
-        assertEquals( i.getThirdFourBits(), 0);
-        assertEquals( i.getLastFourBits(), 1);
+        assertEquals( i.getFirstOctet().intValue(), 10);
+        assertEquals( i.getSecondOctet().intValue(), 0);
+        assertEquals( i.getThirdOctet().intValue(), 0);
+        assertEquals( i.getLastOctet().intValue(), 1);
+    }
+    @Test public void testValidIpAddressCreationWithNumbers(){
+        IpAddress i = new IpAddress( 10, 100, 21, 5);
+        assertEquals( i.getFirstOctet().intValue(), 10);
+        assertEquals( i.getSecondOctet().intValue(), 100);
+        assertEquals( i.getThirdOctet().intValue(), 21);
+        assertEquals( i.getLastOctet().intValue(), 5);
+
+        i = new IpAddress( 0, 1, 0, 255);
+        assertEquals( i.getFirstOctet().intValue(), 0);
+        assertEquals( i.getSecondOctet().intValue(), 1);
+        assertEquals( i.getThirdOctet().intValue(), 0);
+        assertEquals( i.getLastOctet().intValue(), 255);
+    }
+    @Test(expected = IllegalArgumentException.class) public void testInvalidIpAddressCreationWithNumbers1(){
+        new IpAddress( 256, 1, 1, 1);
+    }
+    @Test(expected = IllegalArgumentException.class) public void testInvalidIpAddressCreationWithNumbers2(){
+        new IpAddress( 255, 1, 1, -1);
     }
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidIpAddressCreation0(){
@@ -28,10 +47,6 @@ public class IpAddressTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidIpAddressCreation1(){
         new IpAddress( "10.0.0.256");
-    }
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidIpAddressCreation2(){
-        new IpAddress( "10.0.0.0");
     }
 
     @Test
@@ -43,19 +58,30 @@ public class IpAddressTest {
     @Test
     public void testIncrementIpAddress(){
         IpAddress testIpAddress = new IpAddress("127.0.0.1");
-        IpAddress incrementedIpAddress = testIpAddress.increment(10);
+        IpAddress incrementedIpAddress = testIpAddress.add(10);
 
-        assertEquals( testIpAddress.compareTo(new IpAddress("127.0.0.1")), 0  );
-        assertEquals( incrementedIpAddress.compareTo( new IpAddress("127.0.0.11") ), 0  );
+        assertEquals( 0, testIpAddress.compareTo(new IpAddress("127.0.0.1"))  );
+        assertEquals( 0, incrementedIpAddress.compareTo( new IpAddress("127.0.0.11") )  );
 
         IpAddress borderIpAddress = new IpAddress( "127.0.0.254");
-        incrementedIpAddress = borderIpAddress.increment( 200 );
-        assertEquals( incrementedIpAddress.compareTo( new IpAddress("127.0.1.199") ), 0  );
+        incrementedIpAddress = borderIpAddress.add( 200 );
+        assertEquals( 0, incrementedIpAddress.compareTo( new IpAddress("127.0.1.198") ) );
+    }
+    @Test
+    public void testIpAddressDifference(){
+       IpAddress testIpAddress = new IpAddress( "127.0.0.50");
+       int difference = testIpAddress.differenceCount( new IpAddress("127.0.0.1") );
+       assertEquals( 49, difference );
+
+       int boundaryDifference = testIpAddress.differenceCount( new IpAddress("126.255.255.250"));
+       assertEquals( 56, boundaryDifference );
+
     }
 
-    @Test
-    public void testCountUntilEnd(){
-        IpAddress testIpAddress = new IpAddress("255.255.255.1");
-        assertEquals( testIpAddress.countUntilEnd(), 253 );
+    @Test(expected = IllegalArgumentException.class )
+    public void testInvalidIpAddressDifference(){
+        IpAddress testIpAddress = new IpAddress( "127.0.0.50");
+        testIpAddress.differenceCount( new IpAddress("127.0.0.51") );
     }
+
 }
