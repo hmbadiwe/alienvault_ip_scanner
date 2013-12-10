@@ -38,6 +38,9 @@ public class IpAddress implements Comparable<IpAddress>{
             throw new IllegalArgumentException( "Invalid ip address");
         }
     }
+    public IpAddress( IpAddress ipAddress){
+        this(ipAddress.firstOctet, ipAddress.secondOctet, ipAddress.thirdOctet, ipAddress.lastOctet);
+    }
     private boolean validOctet( int octet ){
         if( octet >= 0 && octet <= 255 ){
             return true;
@@ -84,31 +87,37 @@ public class IpAddress implements Comparable<IpAddress>{
         return lastOctet;
     }
     public IpAddress add(int count){
-       int lastOctet = getLastOctet();
-       int thirdOctet = getThirdOctet();
-       int secondOctet = getSecondOctet();
-       int firstOctet = getFirstOctet();
+       IpAddress returnIpAddress = null;
+       if( count == 0 ){
+           returnIpAddress = new IpAddress(this);
+       }
+       else if( count > 0 ){
+           int lastOctet = getLastOctet();
+           int thirdOctet = getThirdOctet();
+           int secondOctet = getSecondOctet();
+           int firstOctet = getFirstOctet();
 
-       lastOctet += count;
-       if( lastOctet > 255 ){
-           lastOctet %= 256;
-           thirdOctet += 1;
+           lastOctet += count;
+           if( lastOctet > 255 ){
+               lastOctet %= 256;
+               thirdOctet += 1;
+           }
+           if( thirdOctet > 255 ){
+               thirdOctet %= 256;
+               secondOctet += 1;
+           }
+           if( secondOctet > 255 ){
+               secondOctet %= 256;
+               firstOctet += 1;
+           }
+           returnIpAddress = new IpAddress( firstOctet, secondOctet, thirdOctet, lastOctet );;
        }
-       if( thirdOctet > 255 ){
-           thirdOctet %= 256;
-           secondOctet += 1;
+       else{
+           throw new IllegalArgumentException();
        }
-       if( secondOctet > 255 ){
-           secondOctet %= 256;
-           firstOctet += 1;
-       }
-       return new IpAddress( firstOctet, secondOctet, thirdOctet, lastOctet );
+
+       return returnIpAddress;
     }
-
-    public String toString(){
-        return String.format( "%d.%d.%d.%d", this.firstOctet, this.secondOctet, this.thirdOctet, this.lastOctet);
-    }
-
     public int differenceCount( String ipAddress ){
         return  differenceCount( new IpAddress(ipAddress));
     }
@@ -143,6 +152,19 @@ public class IpAddress implements Comparable<IpAddress>{
         }
         else{
             throw new IllegalArgumentException( "Error comparing ipaddress. IpAddress must be 'less than or equal to' this one");
+        }
+        return returnValue;
+    }
+
+    public String toString(){
+        return String.format( "%d.%d.%d.%d", this.firstOctet, this.secondOctet, this.thirdOctet, this.lastOctet);
+    }
+
+    public boolean equals(Object o){
+        boolean returnValue = false;
+        if( o instanceof IpAddress){
+            IpAddress i = (IpAddress)o;
+            returnValue = i.toString().equals(toString());
         }
         return returnValue;
     }

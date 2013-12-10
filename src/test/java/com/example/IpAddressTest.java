@@ -34,6 +34,16 @@ public class IpAddressTest {
         assertEquals( i.getThirdOctet().intValue(), 0);
         assertEquals( i.getLastOctet().intValue(), 255);
     }
+    @Test
+    public void testIpAddressDuplication(){
+        IpAddress i = new IpAddress( "10.0.0.1");
+
+        i = new IpAddress(i);
+        assertEquals( i.getFirstOctet().intValue(), 10);
+        assertEquals( i.getSecondOctet().intValue(), 0);
+        assertEquals( i.getThirdOctet().intValue(), 0);
+        assertEquals( i.getLastOctet().intValue(), 1);
+    }
     @Test(expected = IllegalArgumentException.class) public void testInvalidIpAddressCreationWithNumbers1(){
         new IpAddress( 256, 1, 1, 1);
     }
