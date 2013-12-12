@@ -2,6 +2,7 @@ package com.example;
 import static org.junit.Assert.*;
 
 import com.example.portScanner.IpAddress;
+import com.example.portScanner.IpAddressType;
 import org.junit.Test;
 
 /**
@@ -92,6 +93,13 @@ public class IpAddressTest {
     public void testInvalidIpAddressDifference(){
         IpAddress testIpAddress = new IpAddress( "127.0.0.50");
         testIpAddress.differenceCount( new IpAddress("127.0.0.51") );
+    }
+    @Test
+    public void testValidAddressTypes(){
+        assertEquals(IpAddressType.BROADCAST, IpAddress.addressType("127.0.0.255") );
+        assertEquals(IpAddressType.NETWORK, IpAddress.addressType( "135.0.0.0" ) );
+        assertEquals(IpAddressType.NORMAL, IpAddress.addressType( "135.0.0.1" ) );
+        assertEquals(IpAddressType.NORMAL, IpAddress.addressType( "135.0.0.254" ) );
     }
 
 }

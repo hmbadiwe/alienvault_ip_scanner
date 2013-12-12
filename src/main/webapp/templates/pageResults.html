@@ -1,0 +1,49 @@
+<div>
+     <div data-ng-switch="queriedResults.length">
+         <div data-ng-switch-when="0">
+             <div class="row">
+                 <div class="span5"></div>
+                 <div class="span2">
+                     <span us-spinner="{radius:65, top:'45', lines:25}"></span>
+                 </div>
+                 <div class="span5"></div>
+             </div>
+         </div>
+         <div data-ng-switch-default>
+             <table class="table table-striped">
+                 <thead>
+                   <th>
+                       <td>Ip Address</td>
+                       <td>Port Number</td>
+                       <td>Protocol</td>
+                       <td>Service Type</td>
+                       <td>Address Type</td>
+                       <td>Port Open</td>
+                   </th>
+                 </thead>
+                 <tbody>
+                 <tr data-ng-repeat="result in queriedResults">
+                     <td>{{result.ipAddress}}</td>
+                     <td>{{result.port}}</td>
+                     <td>{{result.protocol}}</td>
+                     <td>{{result.service}}</td>
+                     <td>{{result.ipAddressType}}</td>
+                     <td>{{result.connected}}</td>
+                 </tr>
+                 </tbody>
+                 <tr data-ng-repeat="result in queriedResults">
+                    <td>{{result.ipAddress}}</td>
+                    <td>{{result.port}}</td>
+                    <td>{{result.protocol}}</td>
+                    <td>{{result.service}}</td>
+                    <td>{{result.ipAddressType}}</td>
+                    <td>{{result.connected}}</td>
+                 </tr>
+             </table>
+
+         </div>
+     </div>
+</div>
+<div data-ng-if="queriedResults && queriedResults.length > 0">
+    <pagination total-items="results.length" items-per-page="numberPerPage" page="nav.currentPage" max-size="10" class="pagination-small" boundary-links="true" rotate="false" num-pages="nav.numberPages" on-select-page="queryResults(page)"></pagination>
+</div>

@@ -29,6 +29,14 @@ public class IpAddressRangeTest {
         range = new IpAddressRange( new IpAddress("127.0.0.1") );
         assertEquals( range.getStartIpAddress(), new IpAddress("127.0.0.1") );
         assertEquals( range.getEndIpAddress(), new IpAddress("127.0.0.1") );
+
+        range = new IpAddressRange( new IpAddress("127.0.0.1"), null );
+        assertEquals( range.getStartIpAddress(), new IpAddress("127.0.0.1") );
+        assertEquals( range.getEndIpAddress(), new IpAddress("127.0.0.1") );
+
+        range = new IpAddressRange( "127.0.0.1", null );
+        assertEquals( range.getStartIpAddress(), new IpAddress("127.0.0.1") );
+        assertEquals( range.getEndIpAddress(), new IpAddress("127.0.0.1") );
     }
 
 

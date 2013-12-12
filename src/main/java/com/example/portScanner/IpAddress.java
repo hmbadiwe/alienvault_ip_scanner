@@ -15,6 +15,18 @@ public class IpAddress implements Comparable<IpAddress>{
     private Integer thirdOctet;
     private Integer lastOctet;
 
+    public static IpAddressType addressType(String ipAddressString){
+        IpAddress ipAddress = new IpAddress(ipAddressString);
+        IpAddressType addressType = IpAddressType.NORMAL;
+        if( ipAddress.getLastOctet() == 0 ){
+           addressType = IpAddressType.NETWORK;
+        }
+        else if( ipAddress.getLastOctet() == 255){
+            addressType = IpAddressType.BROADCAST;
+        }
+        return addressType;
+
+    }
     public IpAddress(String ipAddressString){
         if( InetAddressValidator.getInstance().isValidInet4Address(ipAddressString) ){
           String[] ipAddressBitStrings = ipAddressString.split("\\.");
@@ -40,6 +52,12 @@ public class IpAddress implements Comparable<IpAddress>{
     }
     public IpAddress( IpAddress ipAddress){
         this(ipAddress.firstOctet, ipAddress.secondOctet, ipAddress.thirdOctet, ipAddress.lastOctet);
+    }
+    public boolean isNetworkAddress(){
+        return getLastOctet() == 0;
+    }
+    public boolean isBroadcastAddress(){
+        return getLastOctet() == 255;
     }
     private boolean validOctet( int octet ){
         if( octet >= 0 && octet <= 255 ){

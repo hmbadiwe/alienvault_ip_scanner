@@ -1,78 +1,190 @@
 <!DOCTYPE html>
-<html>
+<html data-ng-app="ipAddressRange">
     <head>
         <title>Hello, World</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="css/bootstrap.css" rel="stylesheet">
-        <link href="css/bootstrap-theme.css" rel="stylesheet">
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/common.css" rel="stylesheet">
+        <link href="css/select2.css" rel="stylesheet">
     </head>
-    <body>
+    <body data-ng-controller="IpAddressFormController">
+        <div style="position:fixed; right:0; bottom:0;z-index: 99999999999;opacity: 0.5;">
+            <pre >
+                payload :{{ payload | json}}
+            </pre>
+        </div>
         <div class="row">
-            <div class="col-sm-2">
-                <label>Starting Ip Address</label>
-            </div>
-            <div class="col-sm-1" >
-                <input type="text" maxlength="3" class="form-control" style="width: 75px; display: inline" placeholder="">
-                <span>.</span>
-            </div>
-            <div class="col-sm-1">
-                <input type="text" maxlength="3" class="form-control" style="width: 75px; display: inline">
-                <span>.</span>
-            </div>
-            <div class="col-sm-1">
-                <input type="text" maxlength="3" class="form-control" style="width: 75px; display: inline">
-                <span>.</span>
-            </div>
-            <div class="col-sm-1">
-                <input type="text" maxlength="3" class="form-control" style="width: 75px; display: inline">
+            <div class="span12">
+                <form name="ipAddressRangeForm">
+                    <div style="margin-left: 20px">
+                        <div class="row">
+                            <div class="span2">
+                                <label>Starting Ip Address</label>
+                            </div>
+                            <div class="span8">
+                                <div class="form-inline">
+                                    <input type="number" maxlength="3" class="input-small" max="255" min="0" data-ng-model="startIpAddress.firstOctet" required>
+                                    <span>.</span>
+                                    <input type="number" maxlength="3" class="input-small" max="255" min="0" data-ng-model="startIpAddress.secondOctet" required>
+                                    <span>.</span>
+                                    <input type="number" maxlength="3" class="input-small" max="255" min="0" data-ng-model="startIpAddress.thirdOctet" required>
+                                    <span>.</span>
+                                    <input type="number" maxlength="3" class="input-small" max="255" min="0" data-ng-model="startIpAddress.lastOctet" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 15px">
+                            <div class="span2">
+                                <label>Ending Ip Address</label>
+                            </div>
+                            <div class="span8">
+                                <div class="form-inline">
+                                    <input type="number" maxlength="3" class="input-small" max="255" min="0" data-ng-disabled="!useEndingIpAddress" data-ng-model="endIpAddress.firstOctet" data-ng-required="useEndingIpAddress ==true">
+                                    <span>.</span>
+                                    <input type="number" maxlength="3" class="input-small" max="255" min="0" data-ng-disabled="!useEndingIpAddress" data-ng-model="endIpAddress.secondOctet">
+                                    <span>.</span>
+                                    <input type="number" maxlength="3" class="input-small" max="255" min="0" data-ng-disabled="!useEndingIpAddress" data-ng-model="endIpAddress.thirdOctet">
+                                    <span>.</span>
+                                    <input type="number" maxlength="3" class="input-small" max="255" min="0" data-ng-disabled="!useEndingIpAddress" data-ng-model="endIpAddress.lastOctet">
+                                    <label>
+                                        <input type="checkbox" data-ng-model="useEndingIpAddress"> Use
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px">
+                        <div class="span3"></div>
+                        <div class="span4">
+                            <div class="btn-group">
+                                <button type="button" class="btn" ng-model="selectPortStyle" btn-radio="'Select'">Select</button>
+                                <button type="button" class="btn" ng-model="selectPortStyle" btn-radio="'Range'">Range</button>
+                            </div>
+                        </div>
+                        <div class="span5" data-ng-init="numberPerPage = 25">
+                            <div class="form-inline">
+                                <label>Results Per Page:</label>
+                                <select ui-select2 data-ng-model="numberPerPage" style="width: 75px">
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-ng-switch="selectPortStyle">
+                        <div class="row">
+                            <div class="span10">
+                                <div data-ng-switch-when="Select">
+                                    <div class="row">
+                                        <div class="span2"></div>
+                                        <div class="span7">
+                                            <h4>Select from a list of common ports</h4>
+                                        </div>
+                                        <div class="span3"></div>
+                                    </div>
+                                    <div class="row" style="margin-top: 15px; margin-left: 25px">
+                                        <div class="span3">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" data-ng-false-value="none" data-ng-true-value="22" name="commonPorts" data-ng-model="commonPorts.ssh">SSH
+                                                </label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" data-ng-false-value="none" data-ng-true-value="23" name="commonPorts" data-ng-model="commonPorts.telnet">TELNET
+                                                </label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" data-ng-false-value="none" data-ng-true-value="21" name="commonPorts" data-ng-model="commonPorts.ftp">FTP
+                                                </label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" data-ng-false-value="none" data-ng-true-value="25" name="commonPorts" data-ng-model="commonPorts.smtp">SMTP
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="span3">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" data-ng-false-value="none" data-ng-true-value="80" name="commonPorts" data-ng-model="commonPorts.http">HTTP
+                                                </label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" data-ng-false-value="none" data-ng-true-value="443" name="commonPorts" data-ng-model="commonPorts.https">HTTPS
+                                                </label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" data-ng-false-value="none" data-ng-true-value="53" name="commonPorts" data-ng-model="commonPorts.dns">DNS
+                                                </label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" data-ng-false-value="none" data-ng-true-value="37" name="commonPorts" data-ng-model="commonPorts.ntp">NTP
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-ng-switch-default>
+                                    <div class="row">
+                                        <div class="span2"></div>
+                                        <div class="span4">
+                                            <h4>Specify a port range</h4>
+                                        </div>
+                                        <div class="span6"></div>
+                                    </div>
+                                    <div class="row ports" style="margin-top: 15px; margin-left: 25px">
+                                        <div class="span12 form-inline">
+                                            <label>Start Port</label>
+                                            <input type="number" maxlength="5" max="65335" min="0" data-ng-model="range.start" data-ng-required="selectPortStyle == 'Range'">
+                                            <label> - End Port </label>
+                                            <input type="number" maxlength="5" max="65335" min="0" data-ng-model="range.end" data-ng-required="selectPortStyle == 'Range'">
+                                            <span class="alert-error" data-ng-show="invalidRange == true">The End Port must be greater than the Start Port</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span2">
+                                <span data-ng-show="portSelectionInvalid" class="alert-error">A port selection or range must be given</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="span3"></div>
+                        <div class="span4">
+                            <div style="margin-top: 15px">
+                                <button class="btn" data-ng-click="submitForm()">Submit</button>
+                            </div>
+                        </div>
+                        <div class="span4"></div>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="row" style="margin-top: 15px">
-            <div class="col-sm-2">
-                <label>Ending Ip Address</label>
-            </div>
-            <div class="col-sm-1" >
-                <input type="text" maxlength="3" class="form-control" style="width: 75px; display: inline" placeholder="">
-                <span>.</span>
-            </div>
-            <div class="col-sm-1">
-                <input type="text" maxlength="3" class="form-control" style="width: 75px; display: inline">
-                <span>.</span>
-            </div>
-            <div class="col-sm-1">
-                <input type="text" maxlength="3" class="form-control" style="width: 75px; display: inline">
-                <span>.</span>
-            </div>
-            <div class="col-sm-1">
-                <input type="text" maxlength="3" class="form-control" style="width: 75px; display: inline">
-            </div>
-        </div>
-        <div class="row" style="margin-top: 15px; margin-left: 25px">
-            <div class="col-md2">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="22">SSH
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="21">TELNET
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="21">FTP
-                    </label>
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="21">SMTP
-                    </label>
-                </div>
-            </div>
 
+        <hr>
+        <div data-ng-if="resultData.length > 0 ">
+            <div pageresults results="resultData" numberPerPage="{{numberPerPage}}"></div>
         </div>
-        <script src="js/jquery-1.10.2.min.js"></script>
-        <script src="js/bootstrap.js"></script>
+
+
+
+
+        <script src="js/lib/jquery-1.10.2.min.js"></script>
+        <script src="js/lib/angular.min.js"></script>
+        <script src="js/lib/bootstrap.min.js"></script>
+        <script src="js/lib/ui-bootstrap-tpls-0.6.0.js"></script>
+        <script src="js/lib/select2/select2.min.js"></script>
+        <script src="js/lib/ui-select2.js"></script>
+        <script src="js/lib/underscore.js"></script>
+        <script src="js/app.js"></script>
+        <script src="js/controller.js"></script>
+        <script src="js/directives.js"></script>
+        <script src="js/lib/spin.min.js"></script>
+        <script src="js/lib/angular-spinner.min.js"></script>
     </body>
 </html>

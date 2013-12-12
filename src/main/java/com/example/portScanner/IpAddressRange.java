@@ -8,11 +8,19 @@ public class IpAddressRange {
     private IpAddress startIpAddress = null;
     private IpAddress endIpAddress = null;
     public IpAddressRange( IpAddress startIpAddress, IpAddress endIpAddress){
-       if( startIpAddress.compareTo(endIpAddress) > 0 ){
-           throw new IllegalArgumentException("Start ip Address must precede End ip Address");
+       if( endIpAddress == null){
+           this.startIpAddress = startIpAddress;
+           this.endIpAddress = startIpAddress;
        }
-       this.startIpAddress = startIpAddress;
-       this.endIpAddress = endIpAddress;;
+       else{
+           if( startIpAddress.compareTo(endIpAddress) > 0 ){
+               throw new IllegalArgumentException("Start ip Address must precede End ip Address");
+           }
+           this.startIpAddress = startIpAddress;
+           this.endIpAddress = endIpAddress;
+       }
+
+
     }
     public IpAddressRange( IpAddress startIpAddress){
         this.startIpAddress = startIpAddress;
@@ -23,7 +31,8 @@ public class IpAddressRange {
     }
 
     public IpAddressRange( String startIpAddressString, String endIpAddressString){
-        this( new IpAddress(startIpAddressString), new IpAddress(endIpAddressString));
+        this( new IpAddress(startIpAddressString),
+                endIpAddressString == null ? null : new IpAddress(endIpAddressString));
     }
 
     public IpAddress getStartIpAddress() {
