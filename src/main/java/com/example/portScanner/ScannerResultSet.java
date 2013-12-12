@@ -111,7 +111,8 @@ public class ScannerResultSet {
     public List<ScannerResult> data(){
         List<ScannerResult> returnData = new ArrayList<ScannerResult>();
         List<String> protocolList = getProtocolSet();
-        for( IpAddress ipaddress : this.range.list()){
+        List<IpAddress> ipAddressList = this.range.list();
+        for( IpAddress ipaddress : ipAddressList){
            for( Integer port : this.arrayOfPorts ){
                for( String protString : protocolList){
                    ScannerResult result = new ScannerResult();

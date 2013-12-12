@@ -35,7 +35,7 @@ public class PortRange {
 
     public List<Integer> generatePortRange(){
         List<Integer> returnList = new ArrayList<Integer>();
-        for(int i = end; i < start; i++ ){
+        for(int i = start; i <= end; i++ ){
             returnList.add( i );
         }
         return returnList;

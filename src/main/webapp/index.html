@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html data-ng-app="ipAddressRange">
     <head>
-        <title>Hello, World</title>
+        <title>IP Address Range</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/common.css" rel="stylesheet">
         <link href="css/select2.css" rel="stylesheet">
@@ -167,8 +167,8 @@
         </div>
 
         <hr>
-        <div data-ng-if="resultData.length > 0 ">
-            <div pageresults results="resultData" numberPerPage="{{numberPerPage}}"></div>
+        <div data-ng-if="results.length > 0 ">
+            <div pageresults  data-num-per-page="numberPerPage"></div>
         </div>
 
 

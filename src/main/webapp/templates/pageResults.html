@@ -12,38 +12,41 @@
          <div data-ng-switch-default>
              <table class="table table-striped">
                  <thead>
-                   <th>
-                       <td>Ip Address</td>
-                       <td>Port Number</td>
-                       <td>Protocol</td>
-                       <td>Service Type</td>
-                       <td>Address Type</td>
-                       <td>Port Open</td>
-                   </th>
+                   <tr>
+                       <th>Ip Address</th>
+                       <th>Port Number</th>
+                       <th>Protocol</th>
+                       <th>Service Type</th>
+                       <th>Address Type</th>
+                       <th>Port Open</th>
+                   </tr>
                  </thead>
                  <tbody>
-                 <tr data-ng-repeat="result in queriedResults">
-                     <td>{{result.ipAddress}}</td>
-                     <td>{{result.port}}</td>
-                     <td>{{result.protocol}}</td>
-                     <td>{{result.service}}</td>
-                     <td>{{result.ipAddressType}}</td>
-                     <td>{{result.connected}}</td>
-                 </tr>
+                     <tr data-ng-repeat="result in queriedResults">
+                         <td>{{result.ipAddress}}</td>
+                         <td>{{result.port}}</td>
+                         <td>{{result.protocol}}</td>
+                         <td>{{result.service}}</td>
+                         <td>{{result.ipAddressType}}</td>
+                         <td>{{result.connected}}</td>
+                     </tr>
                  </tbody>
-                 <tr data-ng-repeat="result in queriedResults">
-                    <td>{{result.ipAddress}}</td>
-                    <td>{{result.port}}</td>
-                    <td>{{result.protocol}}</td>
-                    <td>{{result.service}}</td>
-                    <td>{{result.ipAddressType}}</td>
-                    <td>{{result.connected}}</td>
-                 </tr>
              </table>
 
          </div>
      </div>
 </div>
-<div data-ng-if="queriedResults && queriedResults.length > 0">
-    <pagination total-items="results.length" items-per-page="numberPerPage" page="nav.currentPage" max-size="10" class="pagination-small" boundary-links="true" rotate="false" num-pages="nav.numberPages" on-select-page="queryResults(page)"></pagination>
+<div data-ng-if="totalItems > 0">
+    <pagination total-items="totalItems"
+                items-per-page="numberPerPage"
+                page="nav.currentPage"
+                class="pagination-small"
+                boundary-links="true"
+                rotate="false"
+                num-pages="nav.numberOfPages"
+                on-select-page="queryResults(page)"
+                previous-text="&lsaquo;"
+                next-text="&rsaquo;"
+                first-text="&laquo;"
+                last-text="&raquo;"></pagination>
 </div>

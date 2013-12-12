@@ -13,7 +13,7 @@ function IpAddressFormController( $scope, $http ){
    $scope.startIpAddress = {};
    $scope.endIpAddress = {};
    $scope.range = {};
-   $scope.resultData = [];
+   $scope.results = [];
    $scope.resultsPresent = false;
    $scope.payload = {};
 
@@ -52,7 +52,7 @@ function IpAddressFormController( $scope, $http ){
            else{
                $http({ method: "POST", url : "/rest/ipAddressPayload/resultList", data: payload })
                    .success( function( data ){
-                       $scope.resultData = data;
+                       $scope.results = data;
                    })
                    .error( function( error){
 

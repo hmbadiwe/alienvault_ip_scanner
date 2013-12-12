@@ -11,8 +11,7 @@ ipAddressRange.directive( 'pageresults', function(){
            restrict : 'A',
            templateUrl : '/templates/pageResults.html',
            scope : {
-               results : '=results',
-               numberPerPage : '=numberPerPage'
+               numPerPage : '='
            },
            controller : function( $scope, $http ){
 
@@ -22,19 +21,38 @@ ipAddressRange.directive( 'pageresults', function(){
               $scope.nav = {
                   currentPage : 0
               };
-              $scope.nav.numberOfPages = Math.ceil( $scope.results.length/$scope.numberPerPage );
+
 
              $scope.queriedResults = [];
 
-             var sliceOfResults = $scope.results.slice( 0, $scope.numberPerPage );
-               $http({ method: "POST", url : "/rest/ipAddressPayload/portScan", data: sliceOfResults })
-                   .success( function( data ){
-                       $scope.queriedResults = data;
-                   })
-                   .error( function( error){
-                      console.log( "Error getting data: " + error.data );
-                   });
+
+
+             $scope.$watch( '$parent.results', function(newVal){
+                 console.log("Results changed");
+                 if( newVal != undefined || newVal.length > 0 ){
+                     var sliceOfResults = $scope.$parent.results.slice( 0, $scope.numberPerPage );
+                     $http({ method: "POST", url : "/rest/ipAddressPayload/portScan", data: sliceOfResults })
+                         .success( function( data ){
+                             $scope.queriedResults = data;
+                         })
+                         .error( function( error){
+                             console.log( "Error getting data: " + error.data );
+                         });
+                     $scope.totalItems = newVal.length;
+                 }
+                 else{
+                     $scope.queriedResults = [];
+                     $scope.totalItems = 0;
+
+                 }
+                 $scope.nav.currentPage = 0;
+                 $scope.nav.numberOfPages = Math.ceil( $scope.$parent.results.length/$scope.numPerPage );
+
+
+             });
 
            }
+
+
       };
 }) ;
