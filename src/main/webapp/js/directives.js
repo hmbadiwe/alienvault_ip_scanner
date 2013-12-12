@@ -16,6 +16,8 @@ ipAddressRange.directive( 'pageresults', function(){
            controller : function( $scope, $http ){
 
               $scope.queryResults = function(page){
+                queryResults(page - 1);
+
                    console.log( "Which Page: " + page );
               };
               $scope.nav = {
@@ -25,19 +27,28 @@ ipAddressRange.directive( 'pageresults', function(){
 
              $scope.queriedResults = [];
 
+             function queryResults(index){
+                 $scope.resultsPresent = false;
+                 var numPerPage = Number($scope.numPerPage);
+                 var startIndex = index * numPerPage;
+                 var endIndex = startIndex + numPerPage;
+                 var sliceOfResults = $scope.$parent.results.slice( startIndex, endIndex );
+                 $scope.queriedResults = [];
+                 $http({ method: "POST", url : "/rest/ipAddressPayload/portScan", data: sliceOfResults })
+                     .success( function( data ){
+                         $scope.queriedResults = data;
+                         $scope.resultsPresent = true;
+                     })
+                     .error( function( error){
+                         console.log( "Error getting data: " + error.data );
+                     });
+             }
 
 
              $scope.$watch( '$parent.results', function(newVal){
                  console.log("Results changed");
                  if( newVal != undefined || newVal.length > 0 ){
-                     var sliceOfResults = $scope.$parent.results.slice( 0, $scope.numberPerPage );
-                     $http({ method: "POST", url : "/rest/ipAddressPayload/portScan", data: sliceOfResults })
-                         .success( function( data ){
-                             $scope.queriedResults = data;
-                         })
-                         .error( function( error){
-                             console.log( "Error getting data: " + error.data );
-                         });
+                     queryResults(0);
                      $scope.totalItems = newVal.length;
                  }
                  else{

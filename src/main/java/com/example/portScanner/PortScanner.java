@@ -6,6 +6,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.net.DatagramSocket;
+import java.net.Inet4Address;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +37,14 @@ public class PortScanner {
    }
    private PortQueryResult scanTcpPort( PortQuery p ){
        PortQueryResult result = null;
-       Socket s = null;
+       Socket s = new Socket();
        IpAddressType ipAddressType = IpAddress.addressType(p.getIpAddress());
        try{
            if( ipAddressType == IpAddressType.BROADCAST || ipAddressType == IpAddressType.NETWORK ){
               result = new PortQueryResult( p, ipAddressType, false );
            }
            else{
-               s = new Socket(p.getIpAddress(), p.getPort());
+               s.connect( new InetSocketAddress( p.getIpAddress(), p.getPort()), 200);
                result = new PortQueryResult( p, ipAddressType, true );
            }
        }
