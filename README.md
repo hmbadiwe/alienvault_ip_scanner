@@ -1,4 +1,5 @@
-Name Ip Address Range app
+Ip Address Range Application
+
 This project uses maven (>= 3.0) and Java (>= 1.6)
 
 It provides a UI for interacting with the app.
