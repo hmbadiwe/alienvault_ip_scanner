@@ -1,6 +1,6 @@
 package com.example.portScanner.rest.data;
 
-import com.example.portScanner.IpAddressType;
+import com.example.portScanner.data.IpAddressType;
 
 import java.io.Serializable;
 

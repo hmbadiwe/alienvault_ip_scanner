@@ -1,5 +1,8 @@
 package com.example.portScanner;
 
+import com.example.portScanner.data.IpAddress;
+import com.example.portScanner.data.IpAddressRange;
+
 import java.io.Serializable;
 import java.util.*;
 

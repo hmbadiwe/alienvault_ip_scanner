@@ -1,7 +1,7 @@
 package com.example;
 
 
-import com.example.portScanner.IpAddressRange;
+import com.example.portScanner.data.IpAddressRange;
 import com.example.portScanner.ScannerResultSet;
 import org.junit.Test;
 import static org.junit.Assert.*;

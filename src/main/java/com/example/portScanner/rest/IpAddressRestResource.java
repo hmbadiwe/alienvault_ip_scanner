@@ -1,15 +1,18 @@
 package com.example.portScanner.rest;
 
-import com.example.portScanner.IpAddressRange;
+import com.example.portScanner.data.IpAddressRange;
 import com.example.portScanner.PortScanner;
 import com.example.portScanner.Protocol;
 import com.example.portScanner.ScannerResultSet;
+import com.example.portScanner.pager.IpAddressPortRangePager;
+import com.example.portScanner.pager.IpAddressPortSelectionPager;
 import com.example.portScanner.rest.data.Payload;
 import com.example.portScanner.rest.data.PortQuery;
 import com.example.portScanner.rest.data.PortQueryResult;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -54,5 +57,33 @@ public class IpAddressRestResource {
     public List<PortQueryResult> portScan(List<PortQuery> portQueryList){
         PortScanner scanner = new PortScanner( portQueryList );
         return scanner.scanPorts();
+    }
+
+    @Path("/count")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public HashMap<String, Integer> count(Payload p){
+        Integer count = null;
+        if( p.getPortRange() == null && p.getPortList() == null ){
+            throw new IllegalArgumentException("A port range must be specified");
+        }
+        String startIpAddress = p.getStartIpAddress();
+        String endIpAddress = p.getEndIpAddress();
+        if( endIpAddress == null || endIpAddress.trim().length() == 0 ){
+            endIpAddress = startIpAddress;
+        }
+        if( p.getPortRange() != null ){
+            IpAddressPortRangePager pager =
+                    new IpAddressPortRangePager( startIpAddress, endIpAddress, p.getPortRange().getStart(), p.getPortRange().getEnd());
+            count = pager.countIpPortTuples();
+        }
+        else{
+            IpAddressPortSelectionPager pager = new IpAddressPortSelectionPager( startIpAddress, endIpAddress, p.getPortList());
+            count = pager.countIpPortTuples();
+        }
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        map.put( "count", count );
+        return map;
     }
 }

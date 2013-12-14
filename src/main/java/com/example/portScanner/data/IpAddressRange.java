@@ -1,4 +1,4 @@
-package com.example.portScanner;
+package com.example.portScanner.data;
 
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.example;
 
-import com.example.portScanner.IpAddress;
-import com.example.portScanner.IpAddressRange;
+import com.example.portScanner.data.IpAddress;
+import com.example.portScanner.data.IpAddressRange;
 import org.junit.Test;
 
 import java.util.List;

@@ -13,9 +13,12 @@ function IpAddressFormController( $scope, $http ){
    $scope.startIpAddress = {};
    $scope.endIpAddress = {};
    $scope.range = {};
-   $scope.results = [];
+   $scope.results = {
+       count : -1
+   };
    $scope.resultsPresent = false;
    $scope.payload = {};
+
 
    var defaultCommonPorts = {
        ssh : 'none',
@@ -50,7 +53,7 @@ function IpAddressFormController( $scope, $http ){
                $scope.invalidRange = true;
            }
            else{
-               $http({ method: "POST", url : "/rest/ipAddressPayload/resultList", data: payload })
+               $http({ method: "POST", url : "/rest/ipAddressPayload/count", data: payload })
                    .success( function( data ){
                        $scope.results = data;
                    })

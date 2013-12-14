@@ -1,5 +1,7 @@
 package com.example.portScanner;
 
+import com.example.portScanner.data.IpAddress;
+import com.example.portScanner.data.IpAddressType;
 import com.example.portScanner.rest.data.PortQuery;
 import com.example.portScanner.rest.data.PortQueryResult;
 import org.apache.commons.logging.Log;

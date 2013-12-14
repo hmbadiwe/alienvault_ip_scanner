@@ -1,4 +1,4 @@
-package com.example.portScanner;
+package com.example.portScanner.data;
 
 import org.apache.commons.validator.routines.InetAddressValidator;
 
@@ -10,6 +10,7 @@ import org.apache.commons.validator.routines.InetAddressValidator;
  * To change this template use File | Settings | File Templates.
  */
 public class IpAddress implements Comparable<IpAddress>{
+
     private Integer firstOctet;
     private Integer secondOctet;
     private Integer thirdOctet;

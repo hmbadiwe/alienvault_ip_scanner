@@ -1,8 +1,8 @@
 package com.example;
 import static org.junit.Assert.*;
 
-import com.example.portScanner.IpAddress;
-import com.example.portScanner.IpAddressType;
+import com.example.portScanner.data.IpAddress;
+import com.example.portScanner.data.IpAddressType;
 import org.junit.Test;
 
 /**
