@@ -15,6 +15,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class IpAddressPortRangePager extends IpAddressBoundaryPortPager{
+
+
     private int startPort;
     private int endPort;
     private IpAddress startIpAddress;
@@ -69,7 +71,7 @@ public class IpAddressPortRangePager extends IpAddressBoundaryPortPager{
     }
 
     @Override
-    protected List<IpAddressPortTuple> pageWithOffSet(IpAddressPortTuple tuple, int count, int offset) {
+    public List<IpAddressPortTuple> pageWithOffSet(IpAddressPortTuple tuple, int count, int offset) {
 
         if( tuple.getPort() > this.getEndPort() || tuple.getPort() < this.getStartPort()){
             throw new IllegalArgumentException("Port tuple is out of bounds");
@@ -99,6 +101,14 @@ public class IpAddressPortRangePager extends IpAddressBoundaryPortPager{
         }
 
         return returnList;
+    }
+    @Override
+    public List<IpAddressPortTuple> pageWithOffSet(int count, int offset) {
+        return pageWithOffSet(
+                new IpAddressPortTuple(getStartIpAddress().toString(), getStartPort()),
+                count,
+                offset
+        );
     }
 
     public int getStartPort() {

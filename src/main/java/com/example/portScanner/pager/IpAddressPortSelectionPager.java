@@ -65,7 +65,7 @@ public class IpAddressPortSelectionPager extends IpAddressBoundaryPortPager {
     }
 
     @Override
-    protected final List<IpAddressPortTuple> pageWithOffSet(IpAddressPortTuple tuple, int count, int offset) {
+    public final List<IpAddressPortTuple> pageWithOffSet(IpAddressPortTuple tuple, int count, int offset) {
 
         int portIndex = this.ports.indexOf(tuple.getPort());
         if( portIndex < 0 ){
@@ -75,7 +75,7 @@ public class IpAddressPortSelectionPager extends IpAddressBoundaryPortPager {
 
         List<IpAddressPortTuple> returnList = new ArrayList<IpAddressPortTuple>();
         IpAddress pageStartIpAddress = new IpAddress(tuple.getIpAddress());
-        if(  pageStartIpAddress.compareTo( this.startingIpAddress ) < 0 ){
+        if(  pageStartIpAddress.compareTo(this.startingIpAddress) < 0 ){
            throw new IllegalArgumentException("Invalid ip address. Must precede page start");
         }
         IpAddress ipAddress = pageStartIpAddress;
@@ -97,6 +97,10 @@ public class IpAddressPortSelectionPager extends IpAddressBoundaryPortPager {
 
 
         return returnList;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+    @Override
+    public final List<IpAddressPortTuple> pageWithOffSet(int count, int offset) {
+        return pageWithOffSet( new IpAddressPortTuple(this.startingIpAddress.toString(), this.ports.get(0)), count, offset);
     }
     public IpAddress getStartingIpAddress() {
         return startingIpAddress;

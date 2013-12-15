@@ -6,15 +6,12 @@ import com.example.portScanner.rest.data.PortQuery;
 import com.example.portScanner.rest.data.PortQueryResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.net.DatagramSocket;
-import java.net.Inet4Address;
+import com.example.portScanner.ScannerResultSet.ScannerResult;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,34 +22,34 @@ import java.util.regex.Pattern;
  */
 public class PortScanner {
    private Log logger = LogFactory.getLog(PortScanner.class);
-   private List<PortQuery> portQueryList;
+   private List<ScannerResult> scannerResultsList;
 
-   public PortScanner( List<PortQuery> portQueryList ){
-       this.portQueryList = portQueryList;
+   public PortScanner( List<ScannerResult> scannerResultsList ){
+       this.scannerResultsList = scannerResultsList;
    }
    public List<PortQueryResult> scanPorts(){
        List<PortQueryResult> queryResultList = new ArrayList<PortQueryResult>();
-       for( PortQuery p : this.portQueryList){
-           queryResultList.add( scanTcpPort(p));
+       for( ScannerResult s : this.scannerResultsList){
+           queryResultList.add( scanTcpPort(s));
        }
        return queryResultList;
    }
-   private PortQueryResult scanTcpPort( PortQuery p ){
+   private PortQueryResult scanTcpPort( ScannerResult scannerResult ){
        PortQueryResult result = null;
        Socket s = new Socket();
-       IpAddressType ipAddressType = IpAddress.addressType(p.getIpAddress());
+       IpAddressType ipAddressType = IpAddress.addressType(scannerResult.getIpAddress());
        try{
            if( ipAddressType == IpAddressType.BROADCAST || ipAddressType == IpAddressType.NETWORK ){
-              result = new PortQueryResult( p, ipAddressType, false );
+              result = new PortQueryResult( scannerResult, ipAddressType, false );
            }
            else{
-               s.connect( new InetSocketAddress( p.getIpAddress(), p.getPort()), 200);
-               result = new PortQueryResult( p, ipAddressType, true );
+               s.connect( new InetSocketAddress( scannerResult.getIpAddress(), scannerResult.getPort()), 200);
+               result = new PortQueryResult( scannerResult, ipAddressType, true );
            }
        }
        catch (Exception e){
-           result = new PortQueryResult(p, ipAddressType, false);
-           logger.debug("Failed to connect to " + p.getIpAddress() + " " + p.getPort());
+           result = new PortQueryResult(scannerResult, ipAddressType, false);
+           logger.debug("Failed to connect to " + scannerResult.getIpAddress() + " " + scannerResult.getPort());
        }
        finally {
            if( s != null && s.isClosed()){

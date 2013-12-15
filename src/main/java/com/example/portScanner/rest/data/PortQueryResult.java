@@ -1,5 +1,6 @@
 package com.example.portScanner.rest.data;
 
+import com.example.portScanner.ScannerResultSet.ScannerResult;
 import com.example.portScanner.data.IpAddressType;
 
 import java.io.Serializable;
@@ -71,13 +72,13 @@ public class PortQueryResult implements Serializable {
         this.ipAddressType = ipAddressType;
     }
 
-    public PortQueryResult(PortQuery p, IpAddressType ipAddressType, boolean isConnected ){
+    public PortQueryResult(ScannerResult s, IpAddressType ipAddressType, boolean isConnected ){
         this.ipAddressType = ipAddressType.toString();
         if( ipAddressType == IpAddressType.NORMAL ){
-            this.ipAddress = p.getIpAddress();
-            this.port = p.getPort();
-            this.protocol = p.getProtocol();
-            this.service = p.getService();
+            this.ipAddress = s.getIpAddress();
+            this.port = s.getPort();
+            this.protocol = s.getProtocol();
+            this.service = s.getService();
             this.isConnected = isConnected;
 
         }

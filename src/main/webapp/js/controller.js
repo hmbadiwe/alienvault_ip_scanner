@@ -13,11 +13,11 @@ function IpAddressFormController( $scope, $http ){
    $scope.startIpAddress = {};
    $scope.endIpAddress = {};
    $scope.range = {};
-   $scope.results = {
-       count : -1
-   };
    $scope.resultsPresent = false;
-   $scope.payload = {};
+   $scope.query = {
+       page : 0,
+       queryCount : 0
+   };
 
 
    var defaultCommonPorts = {
@@ -45,17 +45,26 @@ function IpAddressFormController( $scope, $http ){
        $scope.portSelectionInvalid = false;
        $scope.invalidRange = false;
        if( $scope.ipAddressRangeForm.$valid ){
-           var payload = $scope.payload;
-           if(_.isEmpty(payload.portList) && _.isEmpty(payload.portRange) ){
+           var query = $scope.query;
+           if(_.isEmpty(query.portList) && _.isEmpty(query.portRange) ){
                $scope.portSelectionInvalid = true;
            }
-           else if( $scope.selectPortStyle == 'Range' && payload.portRange && payload.portRange.start >= payload.portRange.end ){
+           else if( $scope.selectPortStyle == 'Range' && query.portRange && query.portRange.start >= query.portRange.end ){
                $scope.invalidRange = true;
            }
            else{
-               $http({ method: "POST", url : "/rest/ipAddressPayload/count", data: payload })
+               $http({ method: "POST", url : "/rest/ip-range/count", data: query })
                    .success( function( data ){
-                       $scope.results = data;
+                       $scope.query.queryCount = data.count;
+                       $scope.query.totalItems = data.count;
+                       /*var count = $scope.query.queryCount;
+                       if( count == 1000){
+                           count = 0;
+                       }
+                       else{
+                           count += 1;
+                       }
+                       $scope.query.queryCount = count;*/
                    })
                    .error( function( error){
 
@@ -67,20 +76,20 @@ function IpAddressFormController( $scope, $http ){
        }
    };
 
-   function addRangeToPayload(range){
+   function addRangeToQuery(range){
        var start = range.start || 0;
        var end = range.end || 0;
        if( start && end ){
-           $scope.payload.portRange = {};
-           $scope.payload.portRange.start = start;
-           $scope.payload.portRange.end = end;
+           $scope.query.portRange = {};
+           $scope.query.portRange.start = start;
+           $scope.query.portRange.end = end;
 
        }
        else{
-           $scope.payload.portRange = undefined;
+           $scope.query.portRange = undefined;
        }
    }
-    function addPortsToPayload(portsObj){
+    function addPortsToQuery(portsObj){
         if( portsObj ){
             var ports = [];
             _(portsObj).each( function(value,key){
@@ -89,24 +98,27 @@ function IpAddressFormController( $scope, $http ){
                 }
             });
             if( ports.length > 0 ){
-                $scope.payload.portList = ports;
+                $scope.query.portList = ports;
             }
             else{
-                $scope.payload.portList = undefined;
+                $scope.query.portList = undefined;
             }
         }
     }
 
    $scope.$watch('startIpAddress', function(newVal){
       if( newVal ){
-         $scope.payload.startIpAddress = ipAddress(newVal);
+         $scope.query.startingIpAddress = ipAddress(newVal);
+         if( $scope.useEndingIpAddress == false ){
+            $scope.query.endingIpAddress = $scope.query.startingIpAddress;
+         }
       }
 
    }, true);
 
     $scope.$watch('endIpAddress', function(newVal){
         if( newVal && $scope.useEndingIpAddress){
-            $scope.payload.endIpAddress = ipAddress(newVal);
+            $scope.query.endingIpAddress = ipAddress(newVal);
         }
         /*else{
             $scope.payload.endIpAddress = undefined;
@@ -115,31 +127,33 @@ function IpAddressFormController( $scope, $http ){
     }, true);
     $scope.$watch('useEndingIpAddress', function(newVal){
        if( !newVal ){
-           $scope.payload.endIpAddress = undefined;
+           $scope.query.endingIpAddress = $scope.query.startingIpAddress;
        }
        else{
            var endIpAddress = $scope.endIpAddress;
-           $scope.payload.endIpAddress = ipAddress(endIpAddress);
+           $scope.query.endingIpAddress = ipAddress(endIpAddress);
        }
     });
     $scope.$watch( 'range', function(newVal){
-        addRangeToPayload( newVal );
+        addRangeToQuery( newVal );
     }, true );
 
 
     $scope.$watch( 'commonPorts', function(newVal){
-       addPortsToPayload(newVal);
+       addPortsToQuery(newVal);
     }, true);
 
     $scope.$watch( 'selectPortStyle', function( newVal){
         if( newVal =='Select'){
-            addPortsToPayload( $scope.commonPorts );
-            $scope.payload.portRange = undefined;
+            addPortsToQuery( $scope.commonPorts );
+            $scope.query.portRange = undefined;
+            $scope.query.selection = true;
 
         }
         else if( newVal == 'Range'){
-            addRangeToPayload( newVal );
-            $scope.payload.portList = undefined;
+            addRangeToQuery( newVal );
+            $scope.query.portList = undefined;
+            $scope.query.selection = false;
         }
     });
 

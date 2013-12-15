@@ -20,4 +20,6 @@ public abstract class IpAddressBoundaryPortPager extends IpAddressPortPager{
         return pageWithOffSet(tuple, count, 1 );
     }
 
+    public abstract List<IpAddressPortTuple> pageWithOffSet( int count, int offset );
+
 }

@@ -1,6 +1,7 @@
 package com.example;
 
 
+import com.example.portScanner.data.IpAddressPortTuple;
 import com.example.portScanner.data.IpAddressRange;
 import com.example.portScanner.ScannerResultSet;
 import org.junit.Test;
@@ -22,44 +23,31 @@ import java.util.List;
 public class ScannerResultsTest {
 
     @Test
-    public void testScannerResultsWithSingleIpAddress(){
-        List<Integer> portList = new ArrayList<Integer>();
-        portList.add(21);
-        portList.add(22);
-        portList.add(100);
-        portList.add(1000);
-        portList.add(600);
-        ScannerResultSet resultSet = new ScannerResultSet( new IpAddressRange("127.0.0.1"), portList);
-        assertEquals( BOTH, resultSet.getProtocol());
+    public void testScannerResults(){
+        List<IpAddressPortTuple> tuples = new ArrayList<IpAddressPortTuple>();
+        tuples.add( new IpAddressPortTuple("127.0.0.1", 21 ) );
+        tuples.add( new IpAddressPortTuple("127.0.0.1", 22 ) );
+        tuples.add( new IpAddressPortTuple("127.0.0.1", 100 ) );
+        tuples.add( new IpAddressPortTuple("127.0.0.1", 600 ) );
+        tuples.add( new IpAddressPortTuple("127.0.0.1", 1000 ) );
+
+        ScannerResultSet resultSet = new ScannerResultSet( tuples );
+        assertEquals( TCP_ONLY, resultSet.getProtocol());
         List<ScannerResult> dataSet = resultSet.data();
-        assertEquals( 10, dataSet.size());
+        assertEquals( 5, dataSet.size());
 
         assertEquals(21, dataSet.get(0).getPort().intValue());
         assertEquals("File Transfer Protocol", dataSet.get(0).getService());
         assertEquals( "TCP", dataSet.get(0).getProtocol());
         assertEquals("127.0.0.1", dataSet.get(0).getIpAddress());
 
-        assertEquals("UDP", dataSet.get(1).getProtocol());
+        assertEquals("TCP", dataSet.get(1).getProtocol());
 
-        assertEquals("Secure Shell", dataSet.get(3).getService());
-        assertEquals("UDP", dataSet.get(3).getProtocol());
+        assertEquals("Secure Shell", dataSet.get(1).getService());
+        assertEquals("TCP", dataSet.get(1).getProtocol());
 
-        assertEquals( 100, dataSet.get(5).getPort().intValue());
-        assertNull(dataSet.get(5).getService());
-    }
-
-    @Test
-    public void testScannerWithMultipleIpAddresses(){
-        List<Integer> portList = new ArrayList<Integer>();
-        portList.add(21);
-        portList.add(22);
-        portList.add(100);
-        portList.add(1000);
-        portList.add(600);
-        ScannerResultSet resultSet = new ScannerResultSet( new IpAddressRange("127.0.0.1", "127.0.0.3"), portList, TCP_ONLY);
-        assertEquals( TCP_ONLY, resultSet.getProtocol());
-        List<ScannerResult> dataSet = resultSet.data();
-        assertEquals( 15, dataSet.size());
+        assertEquals( 1000, dataSet.get(4).getPort().intValue());
+        assertNull(dataSet.get(4).getService());
     }
 
 }

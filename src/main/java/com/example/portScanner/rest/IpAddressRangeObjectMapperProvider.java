@@ -1,5 +1,6 @@
 package com.example.portScanner.rest;
 
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 
@@ -17,6 +18,7 @@ public class IpAddressRangeObjectMapperProvider implements ContextResolver<Objec
     public ObjectMapper getContext(Class<?> type) {
         ObjectMapper result = new ObjectMapper();
         result.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+        result.configure( DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return result;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -17,5 +17,5 @@ public abstract class IpAddressPortPager {
 
     public abstract int countIpPortTuples();
 
-    protected abstract List<IpAddressPortTuple> pageWithOffSet( IpAddressPortTuple tuple, int count, int offset );
+    public abstract List<IpAddressPortTuple> pageWithOffSet( IpAddressPortTuple tuple, int count, int offset );
 }

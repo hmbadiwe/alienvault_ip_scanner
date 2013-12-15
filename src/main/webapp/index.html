@@ -9,7 +9,7 @@
     <body data-ng-controller="IpAddressFormController">
         <div style="position:fixed; right:0; bottom:0;z-index: 99999999999;opacity: 0.5;">
             <pre >
-                payload :{{ payload | json}}
+                payload :{{ query | json}}
             </pre>
         </div>
         <div class="row">
@@ -60,10 +60,10 @@
                                 <button type="button" class="btn" ng-model="selectPortStyle" btn-radio="'Range'">Range</button>
                             </div>
                         </div>
-                        <div class="span5" data-ng-init="numberPerPage = 25">
+                        <div class="span5" data-ng-init="query.numPerPage = 25">
                             <div class="form-inline">
                                 <label>Results Per Page:</label>
-                                <select ui-select2 data-ng-model="numberPerPage" style="width: 75px">
+                                <select ui-select2 data-ng-model="query.numPerPage" style="width: 75px">
                                     <option value="25">25</option>
                                     <option value="50">50</option>
                                     <option value="100">100</option>
@@ -166,7 +166,9 @@
         </div>
 
         <hr>
-        <div pageresults  data-num-per-page="numberPerPage"></div>
+        <div data-ng-if="query.totalItems > 0 ">
+            <div pageresults  query="query"></div>
+        </div>
 
 
 

@@ -25,5 +25,6 @@ public class IpAddressApplication extends ResourceConfig {
             PortRange.class,
             JacksonFeature.class
         );
+
     }
 }

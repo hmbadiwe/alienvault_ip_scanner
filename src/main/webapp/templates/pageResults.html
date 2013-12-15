@@ -36,9 +36,9 @@
          </div>
      </div>
 </div>
-<div data-ng-if="totalItems > 0">
-    <pagination total-items="totalItems"
-                items-per-page="numPerPage"
+<div data-ng-if="queryClone.totalItems > 0 ">
+    <pagination total-items="queryClone.totalItems"
+                items-per-page="queryClone.numPerPage"
                 page="nav.currentPage"
                 class="pagination-small"
                 boundary-links="true"

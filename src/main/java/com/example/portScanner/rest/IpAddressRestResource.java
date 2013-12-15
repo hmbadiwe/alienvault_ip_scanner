@@ -1,13 +1,15 @@
 package com.example.portScanner.rest;
 
+import com.example.portScanner.data.IpAddressPortTuple;
 import com.example.portScanner.data.IpAddressRange;
 import com.example.portScanner.PortScanner;
 import com.example.portScanner.Protocol;
 import com.example.portScanner.ScannerResultSet;
+import com.example.portScanner.pager.IpAddressBoundaryPortPager;
 import com.example.portScanner.pager.IpAddressPortRangePager;
 import com.example.portScanner.pager.IpAddressPortSelectionPager;
+import com.example.portScanner.rest.data.PageQuery;
 import com.example.portScanner.rest.data.Payload;
-import com.example.portScanner.rest.data.PortQuery;
 import com.example.portScanner.rest.data.PortQueryResult;
 
 import javax.ws.rs.*;
@@ -23,39 +25,36 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-@Path("/ipAddressPayload")
+@Path("/ip-range")
 public class IpAddressRestResource {
-
-
-    @Path("/resultList")
-    @POST()
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public List<ScannerResultSet.ScannerResult> payload(Payload p){
-        List<Integer> listOfPorts = null;
-        if( p.getPortRange() == null && p.getPortList() == null ){
-           throw new IllegalArgumentException("A port range must be specified");
-        }
-        if( p.getPortRange() != null ){
-            listOfPorts = p.getPortRange().generatePortRange();
-        }
-        else{
-            listOfPorts = p.getPortList();
-        }
-
-        ScannerResultSet resultSet = new ScannerResultSet(
-                new IpAddressRange( p.getStartIpAddress(), p.getEndIpAddress() ),
-                listOfPorts, Protocol.TCP_ONLY);
-
-        return resultSet.data();
-    }
 
     @Path("/portScan")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<PortQueryResult> portScan(List<PortQuery> portQueryList){
-        PortScanner scanner = new PortScanner( portQueryList );
+    public List<PortQueryResult> portScan(PageQuery query){
+        int page = query.getPage() == null ? 0 : query.getPage().intValue();
+        int numPerPage = query.getNumPerPage() == null ? 10 : query.getNumPerPage().intValue();
+        IpAddressBoundaryPortPager pager = null;
+        if( query.isSelection() ){
+           pager = new IpAddressPortSelectionPager(
+                   query.getStartingIpAddress(),
+                   query.getEndingIpAddress(),
+                   query.getPortList()
+            );
+        }
+        else{
+            pager = new IpAddressPortRangePager(
+                query.getStartingIpAddress(),
+                query.getEndingIpAddress(),
+                query.getPortRange().getStart(),
+                query.getPortRange().getEnd()
+            );
+        }
+        int offset = page * numPerPage;
+        List<IpAddressPortTuple> tuples = pager.pageWithOffSet( query.getNumPerPage(), offset );
+        ScannerResultSet resultSet = new ScannerResultSet(tuples);
+        PortScanner scanner = new PortScanner( resultSet.data() );
         return scanner.scanPorts();
     }
 
@@ -63,13 +62,13 @@ public class IpAddressRestResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public HashMap<String, Integer> count(Payload p){
+    public HashMap<String, Integer> count(PageQuery p){
         Integer count = null;
         if( p.getPortRange() == null && p.getPortList() == null ){
             throw new IllegalArgumentException("A port range must be specified");
         }
-        String startIpAddress = p.getStartIpAddress();
-        String endIpAddress = p.getEndIpAddress();
+        String startIpAddress = p.getStartingIpAddress();
+        String endIpAddress = p.getEndingIpAddress();
         if( endIpAddress == null || endIpAddress.trim().length() == 0 ){
             endIpAddress = startIpAddress;
         }

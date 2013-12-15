@@ -6,14 +6,20 @@
  * To change this template use File | Settings | File Templates.
  */
 
+function cloner( obj ){
+    return JSON.parse( JSON.stringify( obj ));
+}
+
 ipAddressRange.directive( 'pageresults', function(){
       return {
            restrict : 'A',
            templateUrl : '/templates/pageResults.html',
            scope : {
-               numPerPage : '='
+               query : '='
            },
            controller : function( $scope, $http ){
+
+              $scope.queryClone = cloner( $scope.query );
 
               $scope.queryResults = function(page){
                 queryResults(page - 1);
@@ -23,18 +29,15 @@ ipAddressRange.directive( 'pageresults', function(){
               $scope.nav = {
                   currentPage : 0
               };
+              $scope.totalItems = 0;
 
 
              $scope.queriedResults = [];
 
-             function queryResults(index){
-                 $scope.resultsPresent = false;
-                 var numPerPage = Number($scope.numPerPage);
-                 var startIndex = index * numPerPage;
-                 var endIndex = startIndex + numPerPage;
-                 var sliceOfResults = $scope.$parent.results.slice( startIndex, endIndex );
+             function queryResults(page){
                  $scope.queriedResults = [];
-                 $http({ method: "POST", url : "/rest/ipAddressPayload/portScan", data: sliceOfResults })
+                 $scope.queryClone.page = page;
+                 $http({ method: "POST", url : "/rest/ip-range/portScan", data: $scope.queryClone })
                      .success( function( data ){
                          $scope.queriedResults = data;
                          $scope.resultsPresent = true;
@@ -45,20 +48,13 @@ ipAddressRange.directive( 'pageresults', function(){
              }
 
 
-             $scope.$watch( '$parent.results', function(newVal){
-                 console.log("Results changed");
-                 if( newVal != undefined || newVal.length > 0 ){
-                     queryResults(0);
-                     $scope.totalItems = newVal.length;
+             $scope.$watch( 'query.queryCount', function(newVal){
+                 if( newVal  ){
+                     console.log("Count changed: " + newVal);
+                     $scope.queryClone = cloner( $scope.query);
+                     $scope.query.queryCount = undefined;
+                     queryResults( 0 );
                  }
-                 else{
-                     $scope.queriedResults = [];
-                     $scope.totalItems = 0;
-
-                 }
-                 $scope.nav.currentPage = 0;
-                 $scope.nav.numberOfPages = Math.ceil( $scope.$parent.results.length/$scope.numPerPage );
-
 
              });
 
