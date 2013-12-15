@@ -21,16 +21,16 @@ Also port, 10000 should remain open.
 ##Problems
 The time out for checking socket connectivity is hardcoded. Should be passed in the UI maybe?
 
-* Ip address storage is not very efficient. Uses 4 times as much space for ip address calculation.
-* Ip address abstraction a single integer or at least 4 shorts.
-* Test coverage for some of the classes should be increased.
+* Ip address abstraction (com.example.portScanner.data.IpAddress) should use a single integer or at least 4 shorts. It uses 4 times as much space for ip address calculation.
+* Test coverage for some of the classes should be improved.
+* Too much code in com.example.portScanner.rest.IpAddressRestResource. The logic there should be moved into handler classes that have their own unit tests. 
 * There were some other changes I made to this revision of the code that are not immediately apparent.
 Previously, the user would download the list of all the ip address/port combinations. The paging algorithm would
 slice a certain number of elements from the array as dictated by the number per page field. This would be sent to the server
 and a port scan would be run for each element. This has been improved so that a count is returned in the first query
 and subsequent queries page forward or backward based on the page selected and the number of elements per query.
 * A for loop is used to page forward, with the potential to create a lot of objects depending on the range.
-I'm sure some math could be used instead, just haven't figured it out.
+I'm sure some math could be used instead, just haven't figured it out. This is in the com.example.portScanner.pager.* pager, particularly IpAddressPortRangePager and IpAddressPortSelectionPager;
 * Also, it might have been more prudent to make the /count and /portScan calls to be GETs instead of POSTs and passing the parameters in the url. The UI model contained nested json objects and I didn't want to have to normalize the data that I was sending to the server.
 
 
