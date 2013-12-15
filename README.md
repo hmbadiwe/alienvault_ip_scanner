@@ -1,5 +1,11 @@
 #Ip Address Range Application
 
+##Original Objective
+Write a port scanner in Java.  Given a range of IPs, it is to scan the hosts and give us as much information about said hosts as possible.  Please write the code as if this is what you would check in at work.
+
+You can make any reasonable interpretations of this you need to in order to complete the project, listing them in your notes.
+
+##Instructions for running application
 This project uses maven (>= 3.0) and Java (>= 1.6)
 
 It provides a UI for interacting with the app.
