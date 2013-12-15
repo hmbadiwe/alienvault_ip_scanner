@@ -10,6 +10,7 @@ To run the UI:
 from the application root, run "mvn jetty:run".
 In your browser, go to "localhost:9000".
 If 9000 is not a suitable port, on line 58 of the POM, you can change the port value to whatever you desire.
+Also port, 10000 should remain open.
 
 ##Problems
 The time out for checking socket connectivity is hardcoded. Should be passed in the UI maybe?
