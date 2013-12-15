@@ -31,6 +31,7 @@ and a port scan would be run for each element. This has been improved so that a 
 and subsequent queries page forward or backward based on the page selected and the number of elements per query.
 * A for loop is used to page forward, with the potential to create a lot of objects depending on the range.
 I'm sure some math could be used instead, just haven't figured it out.
+* Also, it might have been more prudent to make the /count and /portScan calls to be GETs instead of POSTs and passing the parameters in the url.
 
 
 Thanks.
